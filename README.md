@@ -1,4 +1,4 @@
-# 任务4 感知/基于视觉传感器的3D目标检测
+# 任务4 基于视觉传感器的3D目标检测
 概述：多视觉传感器的3D目标检测算法主要应用于汽车智能驾驶，基于车载多摄像头的输入，完成车辆周围多目标的3D位置的检测，并能适应城市工况下的复杂场景。
 且指标性能接近使用激光雷达的检测水平。
 
@@ -11,8 +11,9 @@
 ### 课程
 课程视频在B站有搬运
 * [CS229 Machine Learning](https://cs229.stanford.edu/) 机器学习
-* [Deep Learning by deeplearning.ai](https://www.coursera.org/specializations/deep-learning) 深度学习
+* [Deep Learning Specialization](https://www.coursera.org/specializations/deep-learning) 深度学习
 * [CS231n Deep Learning for Computer Vision](http://cs231n.stanford.edu/) 计算机视觉
+* [Self-Driving Cars Specialization](https://www.coursera.org/specializations/self-driving-cars) 自动驾驶汽车
 ### 软件
 * [NumPy](https://numpy.org/) 数值计算
 * [PyTorch](https://pytorch.org/) GPU加速的数值计算，神经网络
