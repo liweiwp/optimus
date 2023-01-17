@@ -14,9 +14,9 @@ Apache License 2.0
 基于任务概述和功能要求，得出本任务是在**nuScenes数据集**上，使用**纯视觉(单目或多视图)算法**，进行3D目标检测。
 
 **nuScenes数据集**是一个大规模的多模态数据集，由从6个摄像头，1个激光雷达和5个毫米波雷达收集的数据组成。该数据集有1000个场景，官方分为700/150/150个场景，分别用于训练/验证/测试。每个场景都有20s的视频帧，并且每0.5s用3D边界框进行完整的标注。官方评测指标定义了nuScenes检测分数(NDS)和平均精度(mAP)，以及平均平移误差(mATE)、平均尺度误差(mASE)、平均方向误差(mAOE)、平均速度误差(mAVE)、平均属性误差(mAAE)。
->$ \textrm{mAP} = \frac{1}{|\mathbb{C}| |\mathbb{D}|} \sum_{c \in \mathbb{C}} \sum_{d \in \mathbb{D}} \textrm{AP}_{c, d}$  
->$ \textrm{mTP} = \frac{1}{|\mathbb{C}|} \sum_{c \in \mathbb{C} } \textrm{TP}_{c} $  
->$ \textrm{NDS} = \frac{1}{10} [5~\textrm{mAP} + \sum_{\textrm{mTP} \in \mathbb{TP}} ( 1 - \min(1, \; \textrm{mTP}) ) ] $
+> $ \textrm{mAP} = \frac{1}{|\mathbb{C}| |\mathbb{D}|} \sum_{c \in \mathbb{C}} \sum_{d \in \mathbb{D}} \textrm{AP}_{c, d}$  
+> $ \textrm{mTP} = \frac{1}{|\mathbb{C}|} \sum_{c \in \mathbb{C} } \textrm{TP}_{c} $  
+> $ \textrm{NDS} = \frac{1}{10} [5~\textrm{mAP} + \sum_{\textrm{mTP} \in \mathbb{TP}} ( 1 - \min(1, \; \textrm{mTP}) ) ] $
 
 **多视图3D目标检测算法**有基于BEV的方法如BEVDet、M^2BEV，和基于DETR的方法如DETR3D、PETR，以及两者结合的方法如BEVFormer。基于BEV的方法会显式建立一个BEV表示，BEVDet采用LSS方法建立BEV表示，BEVFormer采用Transformer注意力机制生成BEV表示，同时BEVFormer融合了时域信息。但BEVFormer对算力要求太高，而且也有点复杂难懂，我们将其作为基线来对比。我们最终选用的是一种**简单**且**优雅**的算法PETR和其时域扩展版PETRv2。
 
@@ -70,7 +70,7 @@ PETR是一个非常简单的算法，其参考2D目标检测算法DETR。DETR的
 #### 整体架构
 ![PETR](docs/figs/overview.png)
 
-给定图像$I=\{ I_i \in R^{3 \times H_I \times W_I}, i=1,2,\dots, N \}$来自$N$个视图，图像被输入到骨干网络（例如ResNes50）以提取2D多视图特征$F^{2d}=\{F^{2d}_i\in  R^{C \times H_F \times W_F}, i=1,2,\dots, N\}$。在3D坐标生成器中，相机视锥体空间首先被离散化为3D网格。然后网格的坐标经相机参数变换并生成3D世界空间中的坐标。3D坐标连同2D多视图特征被输入到3D位置编码器，产生3D位置感知特征$F^{3d}=\{F^{3d}_i\in  R^{C \times H_F \times W_F}, i=1,2,\dots, N\}$。3D特征进一步输入到Transformer解码器，并与查询生成器生成的对象查询交互。更新后的对象查询用于预测对象类别以及3D边界框。
+给定图像 $I=\{ I_i \in R^{3 \times H_I \times W_I}, i=1,2,\dots, N \}$ 来自 $N$ 个视图，图像被输入到骨干网络（例如ResNes50）以提取2D多视图特征$F^{2d}=\{F^{2d}_i\in  R^{C \times H_F \times W_F}, i=1,2,\dots, N\}$。在3D坐标生成器中，相机视锥体空间首先被离散化为3D网格。然后网格的坐标经相机参数变换并生成3D世界空间中的坐标。3D坐标连同2D多视图特征被输入到3D位置编码器，产生3D位置感知特征$F^{3d}=\{F^{3d}_i\in  R^{C \times H_F \times W_F}, i=1,2,\dots, N\}$。3D特征进一步输入到Transformer解码器，并与查询生成器生成的对象查询交互。更新后的对象查询用于预测对象类别以及3D边界框。
 
 #### 3D坐标生成器
 ![3DPE](docs/figs/transformation.png)
